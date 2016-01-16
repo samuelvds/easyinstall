@@ -1,0 +1,121 @@
+#!/bin/bash
+
+whiptail --title "Easy Install" --checklist --separate-output "Choose install:" 25 32 19 \
+"Apache" "" off \
+"PHP" "" off \
+"MySQL Server" "" off \
+"PhpMyAdmin" "" off \
+"Curl" "" off \
+"Git" "" off \
+"NodeJs" "" off \
+"Docker" "" off \
+"Virtualbox" "" off \
+"Python 3.3" "" off \
+"7zip" "" off \
+"Rar && UnRar" "" off \
+"Terminator" "" off \
+"Blih" "" off \
+"SublimText 3" "" off \
+"Google Chrome" "" off \
+"Skype" "" off \
+"QNetSoul" "" off \
+"Enpass" "" off 2>/tmp/easyinstall
+
+while read choice
+do
+	case $choice in
+	"Apache") 
+		apt-get install -y apache2
+	;;
+	"PHP")
+		apt-get install -y php5
+		apt-get install -y php5-mysql
+		apt-get install -y php5-gd
+		apt-get install -y php5-memcache
+		apt-get install -y php5-mcrypt
+		apt-get install -y php-pear
+	;;
+	"MySQL Server")
+		apt-get install -y mysql-server
+	;;
+	"PhpMyAdmin")
+		apt-get install -y phpmyadmin
+	;;
+	"Curl")
+		apt-get install -y curl
+	;;
+	"Git")
+		apt-get install -y git
+	;;	
+	"NodeJs")
+		apt-get install -y nodejs
+		apt-get install -y npm
+		ln -s /usr/bin/nodejs /usr/bin/node
+	;;	
+	"Docker")
+		sudo apt-get install -y docker.io
+	;;
+	"Virtualbox")
+		sudo apt-get install -y virtualbox-qt
+	;;
+	"Python 3.3")
+		apt-get install -y python-software-properties
+		add-apt-repository -y ppa:fkrull/deadsnakes
+		apt-get -y update
+		apt-get install -y python3.3
+	;;
+	"7zip")
+		apt-get install -y p7zip-full 
+	;;
+	"Rar && UnRar")
+		apt-get install -y rar
+		apt-get install -y unrar
+	;;
+	"Terminator")
+		sudo apt-get install -y terminator
+	;;
+	"Blih") 
+		cp resources/blih.py /usr/local/bin/blih.py
+	    chmod 755 /usr/local/bin/blih.py
+	    ln -s /usr/local/bin/blih.py /usr/bin/blih
+
+	    #Auto
+	    cp resources/git_init_epitech.sh /usr/local/bin/easyblih.sh
+	    chmod 755 /usr/local/bin/easyblih.sh
+	    ln -s /usr/local/bin/easyblih.sh /usr/bin/easyblih
+
+	    #Config
+		Login=$(whiptail --title "Input" --inputbox "Login Unix" 10 60 3>&1 1>&2 2>&3)		 
+		exitstatus=$?
+		if [ $exitstatus = 0 ]; then
+		    sed -i "s/USER_GIT='user'/USER_GIT='$Login' /g" /usr/local/bin/easyblih.sh
+		fi
+
+		Pass=$(whiptail --title "Input" --inputbox "Mot de passe Unix" 10 60 3>&1 1>&2 2>&3)		 
+		exitstatus=$?
+		if [ $exitstatus = 0 ]; then
+		    sed -i "s/PASSWORD='password'/PASSWORD='$Pass' /g" /usr/local/bin/easyblih.sh
+		fi
+	;;
+	"SublimText 3")
+		dpkg -i resources/sublime-text_3.deb
+	;;
+	"Google Chrome")
+		dpkg -i resources/google-chrome_3.deb
+	;;
+	"Skype")
+		dpkg -i resources/skype.deb
+	;;
+	"QNetSoul")
+		mkdir /usr/local/bin/QNetSoul
+		cp resources/QNetSoul/QNetSoul /usr/local/bin/QNetSoul
+		cp resources/QNetSoul/Updater /usr/local/bin/QNetSoul
+		ln -s /usr/local/bin/QNetSoul/QNetSoul /usr/bin/QNetSoul
+	;;
+	"Enpass")
+		./resources/EnpassInstaller
+	;;
+	esac
+done < /tmp/easyinstall
+
+rm -f /tmp/easyinstall

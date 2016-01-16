@@ -1,0 +1,43 @@
+#!/bin/bash
+
+whiptail --title "Easy Install" --checklist --separate-output "Choose install:" 15 32 3 \
+"Php Erros" "" off \
+"Php Erros Reporting" "" off \
+"Apache Default dir" "" off 2>/tmp/easyinstall
+
+while read choice
+do
+	case $choice in
+		"Php Erros")
+			if (whiptail --title "Easy Install" --yesno "Activer les erreurs php ?" 10 60) then				
+				sed -i "s/display_errors = .*/display_errors = On/g" /etc/php5/apache2/php.ini
+			else				
+				sed -i "s/display_errors = .*/display_errors = Off/g" /etc/php5/apache2/php.ini
+			fi
+			echo "Reboot de apache2 ..."
+			service apache2 restart
+		;;
+		"Php Erros Reporting")
+			if (whiptail --title "Easy Install" --yesno "Passer en mode Development ?" 10 60) then				
+				sed -i "s/error_reporting = .*/error_reporting = E_ALL/g" /etc/php5/apache2/php.ini
+			else				
+				sed -i "s/error_reporting = .*/error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT/g" /etc/php5/apache2/php.ini
+			fi
+			echo "Reboot de apache2 ..."
+			service apache2 restart
+		;;
+		"Apache Default dir")
+			Name=$(whiptail --title "Easy Install" --inputbox "Chemin du nouveau dossier" 10 60 /var/www/html 3>&1 1>&2 2>&3)			 
+			exitstatus=$?
+			if [ $exitstatus = 0 ]; then
+				sed -i "s/.*/ $Name /g" /etc/apache2/apache2.conf
+			    # sed -i "s/DocumentRoot \/var\/www\/html/DocumentRoot $Name /g" /etc/apache2/sites-available/000-default.conf
+			    echo "lol"
+			fi			
+			echo "Reboot de apache2 ..."
+			service apache2 restart
+		;;
+	esac
+done < /tmp/easyinstall
+
+rm -f /tmp/easyinstall

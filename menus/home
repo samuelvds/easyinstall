@@ -1,0 +1,29 @@
+#!/bin/bash
+
+whiptail --title "Easy Install" --menu --separate-output "Choose :" 15 32 3 \
+"Update" "" \
+"Apps" "" \
+"Tools" "" 2>.tmp/home
+
+choice=$(cat .tmp/home)
+
+case $choice in
+	"Update My PC")		
+		apt-get -y update
+		apt-get -y upgrade
+		apt-get -y dist-upgrade
+		apt-get -y autoremove
+		whiptail --title "Easy Install" --msgbox "Update complete" 10 60
+		clear
+		./menus/home
+	;;
+	"Apps")
+		./menus/apps
+		whiptail --title "Easy Install" --msgbox "Install complete" 10 60
+		clear
+		./menus/home
+	;;
+	"Tools")
+		./menus/tool
+	;;
+esac

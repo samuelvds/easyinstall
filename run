@@ -1,0 +1,28 @@
+#!/bin/bash
+
+verify_packet () {
+	if [ `dpkg-query -W --showformat='${Status}\n' $1 2>/dev/null | grep 'install ok installed' | wc -l` -ge 1 ]; then
+		echo 1
+	else
+		echo 0
+	fi
+}
+
+# Detected if not run in root
+if [[ $EUID -ne 0 ]]; then
+  echo "You must be a root user" 2>&1
+  exit 1
+fi
+
+if [ ! -d ".tmp/" ]; then
+	mkdir .tmp
+fi
+
+if [ ! -f .tmp/status ]; then 
+	./update_mypc/run
+	echo "ok" > .tmp/status
+fi
+
+chmod +x -R .
+
+./menus/home
