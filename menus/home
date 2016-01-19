@@ -8,7 +8,7 @@ whiptail --title "Easy Install" --menu --separate-output "Choose :" 15 32 3 \
 choice=$(cat .tmp/home)
 
 case $choice in
-	"Update My PC")		
+	"Update")		
 		apt-get -y update
 		apt-get -y upgrade
 		apt-get -y dist-upgrade
